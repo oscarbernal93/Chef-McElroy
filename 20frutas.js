@@ -116,8 +116,10 @@ function parseBool(cadena){
 
 function guardar_propiedad(nombre,propiedades){
   objetos.push([nombre.value,propiedades]);
-  alert(nombre.value + " se ha guardado!");
   div_consola.innerHTML="";
+  var tmp = document.createElement('h4')
+  tmp.innerHTML = "datos de " + nombre.value + " guardados correctamente";
+  div_consola.appendChild(tmp);
 }
 
 function crear_propiedad(contenedor,lista,nombre,propiedades){
@@ -514,3 +516,70 @@ function descubrir_objeto() {
   */
 }
 
+function contar_frutas() {
+    div_consola.innerHTML = "";
+    var tmp = document.createElement('h4')
+    tmp.innerHTML = "Frutas:";
+    div_consola.appendChild(tmp);
+
+    var tmp = document.createElement('p')
+    tmp.innerHTML = "En toda mi experiencia como campesino he conocido <strong>"+ objetos.length + "</strong> frutas.";
+    div_consola.appendChild(tmp);
+}
+
+//////////////////
+// SAVE & LOAD
+
+function descargar() {
+  datos = { verbos:verbos,
+            caracteristicas:caracteristicas,
+            objetos:objetos}
+  var a = document.createElement("a"),
+  file = new Blob([JSON.stringify(datos)], {type: "application/json"});
+  var url = URL.createObjectURL(file);
+  a.href = url;
+  a.download = "datos.json";
+  div_consola.appendChild(a);
+  a.click();
+  setTimeout(function() {
+      div_consola.removeChild(a);
+      window.URL.revokeObjectURL(url);  
+  }, 0); 
+}
+
+function cargador() {
+  div_consola.innerHTML = "";
+  var tmp = document.createElement('h4')
+  tmp.innerHTML = "Cargar base de conocimiento";
+  div_consola.appendChild(tmp);
+
+  var input = document.createElement('input')
+  input.type="file";
+  input.accept=".json, application/json";
+  input.innerHTML = "";
+  div_consola.appendChild(input);
+
+  input.addEventListener('change', cargar, false);
+}
+
+
+function cargar(evt) {
+  var archivo = evt.target.files[0];
+  ready=false;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+      contenidos = e.target.result;
+      jason = JSON.parse(contenidos);
+      verbos = jason.verbos;
+      caracteristicas = jason.caracteristicas;
+      objetos = jason.objetos;
+      ready = true;
+  };
+  reader.readAsText(archivo);
+  while(ready){}
+  //mensaje exitoso
+  div_consola.innerHTML = "";
+  var tmp = document.createElement('h4')
+  tmp.innerHTML = "Archivo Cargado!";
+  div_consola.appendChild(tmp);
+}
