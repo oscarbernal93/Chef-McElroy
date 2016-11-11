@@ -104,6 +104,15 @@ function decir_respuestas(respuestas) {
   }
   return s;
 }
+function parseBool(cadena){
+  if (cadena == "true") {
+    return true;
+  }else{
+    return false;
+  }
+}
+
+/////////
 
 function guardar_propiedad(nombre,propiedades){
   objetos.push([nombre.value,propiedades]);
@@ -135,12 +144,12 @@ function crear_propiedad(contenedor,lista,nombre,propiedades){
   var tmp = document.createElement('button')
   tmp.innerHTML = "guardar";
   tmp.addEventListener('click',function(){
-    verbo_nuevo=select.value;
+    verbo_nuevo=parseInt(select.value);
     cualidad_nueva=input.value;
     caracteristicas.push([verbo_nuevo,cualidad_nueva]);
 
     indice_seleccionado = caracteristicas.length - 1;
-    polaridad = select_respuesta.value;
+    polaridad = parseBool(select_respuesta.value);
     propiedades.push([indice_seleccionado,polaridad]);
 
     var tmp = document.createElement('li')
@@ -159,7 +168,7 @@ function crear_propiedad(contenedor,lista,nombre,propiedades){
     tmp.addEventListener('click',function(){crear_propiedad(contenedor,lista,nombre,propiedades)})
     contenedor.appendChild(tmp)
     var tmp = document.createElement('button')
-    tmp.innerHTML = "Crear propiedad"
+    tmp.innerHTML = "Guardar propiedad"
     tmp.addEventListener('click',function(){guardar_propiedad(nombre,propiedades)})
     contenedor.appendChild(tmp)
   })
@@ -192,8 +201,8 @@ function sleccionar_propiedad(contenedor,lista,nombre,propiedades){
   var tmp = document.createElement('button')
   tmp.innerHTML = "guardar";
   tmp.addEventListener('click',function(){
-    indice_seleccionado = select.value;
-    polaridad = select_respuesta.value;
+    indice_seleccionado = parseInt(select.value);
+    polaridad = parseBool(select_respuesta.value);
     propiedades.push([indice_seleccionado,polaridad]);
     m = caracteristicas[indice_seleccionado];
     lista.children[indice_seleccionado].innerHTML = "(" + select_respuesta.selectedOptions[0].innerHTML + ") "+ verbos[m[0]] + " " + m[1];
@@ -208,7 +217,7 @@ function sleccionar_propiedad(contenedor,lista,nombre,propiedades){
     tmp.addEventListener('click',function(){crear_propiedad(contenedor,lista,nombre,propiedades)})
     contenedor.appendChild(tmp)
     var tmp = document.createElement('button')
-    tmp.innerHTML = "Guardar"
+    tmp.innerHTML = "Guardar propiedad"
     tmp.addEventListener('click',function(){guardar_propiedad(nombre,propiedades)})
     contenedor.appendChild(tmp)
   })
@@ -262,7 +271,7 @@ function crear_objeto() {
     consola_propiedades.appendChild(tmp)
 
     var tmp = document.createElement('button')
-    tmp.innerHTML = "Guardar"
+    tmp.innerHTML = "Guardar propiedad"
     tmp.addEventListener('click',function(){guardar_propiedad(nombre,propiedades)})
     consola_propiedades.appendChild(tmp)
 
