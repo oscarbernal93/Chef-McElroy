@@ -269,7 +269,7 @@ function crear_objeto() {
 /*
     var una_mas = true;
     while (una_mas){
-      var es_nuevo =
+      var es_nuevo = confirm("Caracteristicas existentes:\n" + imprimir_caracteristicas() +"\n¿La caracteristica es nueva?");
       if (es_nuevo) {
         var verbo_nuevo = prompt("verbos existentes:\n" + imprimir_verbos() + "\n¿que verbo?");
         var cualidad_nueva = prompt("Ingrese la cualidad:\nla fruta "+verbos[verbo_nuevo]+"...");
