@@ -299,7 +299,83 @@ function crear_objeto() {
 
 ////////////////////////
 //DESCUBRIR UN OBJETO
+function siguiente_objeto(i,agenda,preguntas) {
+  var fin = false;
+  var objeto = agenda[i];
+  //se supone que es el primer objeto
+  //y empieza a preguntar caracteristicas
+  propiedades = objeto[1];
+
+  //se hace la primera pregunta
+  j={index:0,encontrado:true};
+  siguiente_pregunta(i,j,propiedades,preguntas);
+  if (j[encontrado] ==false){
+    delete agenda[i];
+  }else{
+    fin = confirm("¿es " + objeto[0] + ' la respuesta?');
+    //se recontra valida
+    if (fin) {
+      //y se sale
+      console.log("es: "+objeto[0]);
+      encontrado(objeto);
+      i = objetos.length //para que no siga
+    }
+  }
+  i++;
+  if (i < objetos.length) {
+    siguiente_objeto(i,agenda,preguntas);
+  }else if (fin){
+    //si supero el limite, y es el fin
+    alert("No se encontraron coincidencias para las caracteristicas:\n"+decir_respuestas(preguntas));
+  }
+  //si no supero el limite y no es el fin
+  //termina la ejecucion;
+}
+function siguiente_pregunta(i,j,propiedades,preguntas) {
+  encontrado = true;
+  propiedad = propiedades[j];
+  //se desenglosa la dupla
+  caracter = propiedad[0];  //id de la caracteristica
+  polaridad = propiedad[1]  //falso o verdadero
+  //antes de preguntar valida si eso ya se ha preguntado
+  if (preguntas.hasOwnProperty(caracter) ) {
+    //como la pregunta ya existe
+    respuesta = preguntas[caracter];
+  }else{
+    //como no ha preguntado, ahora si pregunta
+    var respuesta = confirm(hacer_pregunta(caracter));
+    //y guarda la respuesta
+    preguntas[caracter] = respuesta
+  }
+  //se valida la polaridad, si falla, borra el item y se sale
+  if (respuesta != polaridad) {
+    //con un solo caracter que falle, descarta el item
+    j[encontrado] = false;
+  }else{
+    //si no falla, pasa a la siguiente pregunta
+    j[index]++;
+    if (j[index] < propiedades.length) {
+      //solo si hay mas preguntas
+      siguiente_pregunta(i,j,propiedades,preguntas);
+    }
+  }
+  //si va a terminar y hay mas objetos pasa al siguiente
+  i++;
+  if (i < objetos.length) {
+    siguiente_objeto(i,agenda,preguntas);
+  }
+}
+
 function descubrir_objeto() {
+  div_consola.innerHTML = "";
+
+  var preguntas = {} //diccionario con: id caracteristica y respuesta
+  //se crea una copia de los objetos
+  var agenda = objetos.slice();
+  
+  i = siguiente_objeto(0,agenda,preguntas);
+
+  /*
   var encontrado = false;
   var preguntas = {} //diccionario con: id caracteristica y respuesta
   //se crea una copia de los objetos
@@ -349,5 +425,6 @@ function descubrir_objeto() {
   if (!encontrado){
     alert("No se encontraron coincidencias para las caracteristicas:\n"+decir_respuestas(preguntas));
   }
+  */
 }
 
