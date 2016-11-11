@@ -168,7 +168,7 @@ function crear_propiedad(contenedor,lista,nombre,propiedades){
     tmp.addEventListener('click',function(){crear_propiedad(contenedor,lista,nombre,propiedades)})
     contenedor.appendChild(tmp)
     var tmp = document.createElement('button')
-    tmp.innerHTML = "Guardar propiedad"
+    tmp.innerHTML = "Guardar Fruta"
     tmp.addEventListener('click',function(){guardar_propiedad(nombre,propiedades)})
     contenedor.appendChild(tmp)
   })
@@ -217,7 +217,7 @@ function sleccionar_propiedad(contenedor,lista,nombre,propiedades){
     tmp.addEventListener('click',function(){crear_propiedad(contenedor,lista,nombre,propiedades)})
     contenedor.appendChild(tmp)
     var tmp = document.createElement('button')
-    tmp.innerHTML = "Guardar propiedad"
+    tmp.innerHTML = "Guardar Fruta"
     tmp.addEventListener('click',function(){guardar_propiedad(nombre,propiedades)})
     contenedor.appendChild(tmp)
   })
@@ -271,7 +271,7 @@ function crear_objeto() {
     consola_propiedades.appendChild(tmp)
 
     var tmp = document.createElement('button')
-    tmp.innerHTML = "Guardar propiedad"
+    tmp.innerHTML = "Guardar Fruta"
     tmp.addEventListener('click',function(){guardar_propiedad(nombre,propiedades)})
     consola_propiedades.appendChild(tmp)
 
@@ -300,7 +300,95 @@ function crear_objeto() {
 ////////////////////////
 //DESCUBRIR UN OBJETO
 function eureka(objeto) {
-  console.log("es: "+objeto[0]);
+  div_consola.innerHTML = "";
+  var tmp = document.createElement('h4')
+  tmp.innerHTML = "Respuesta:";
+  div_consola.appendChild(tmp);
+
+  var tmp = document.createElement('p')
+  tmp.innerHTML = "la fruta es "+objeto[0];
+  div_consola.appendChild(tmp);
+}
+
+function preguntar(pregunta,i,j,agenda,preguntas) {
+  div_consola.innerHTML = "";
+  var objeto = agenda[i];
+  var propiedades = objeto[1];
+  var propiedad = propiedades[j];
+  //se desenglosa la dupla
+  var caracter = propiedad[0];  //id de la caracteristica
+  var polaridad = propiedad[1]  //falso o verdadero
+  var tmp = document.createElement('h4')
+  tmp.innerHTML = pregunta;
+  div_consola.appendChild(tmp);
+
+  var div_respuestas = document.createElement('p')
+
+  var tmp = document.createElement('button')
+  tmp.innerHTML = "SI"
+  tmp.addEventListener('click',function(){responder(true,i,j,agenda,preguntas)})
+  div_respuestas.appendChild(tmp)
+
+  var tmp = document.createElement('button')
+  tmp.innerHTML = "NO"
+  tmp.addEventListener('click',function(){responder(false,i,j,agenda,preguntas)})
+  div_respuestas.appendChild(tmp)
+
+  div_consola.appendChild(div_respuestas);
+}
+
+function confirmar(i,j,agenda,preguntas) {
+  div_consola.innerHTML = "";
+  var objeto = agenda[i];
+  var tmp = document.createElement('h4')
+  tmp.innerHTML = "¿es " + objeto[0] + ' la respuesta?';
+  div_consola.appendChild(tmp);
+
+  var div_respuestas = document.createElement('p')
+
+  var tmp = document.createElement('button')
+  tmp.innerHTML = "SI"
+  tmp.addEventListener('click',function(){confirmado(true,i,j,agenda,preguntas)})
+  div_respuestas.appendChild(tmp)
+
+  var tmp = document.createElement('button')
+  tmp.innerHTML = "NO"
+  tmp.addEventListener('click',function(){confirmado(false,i,j,agenda,preguntas)})
+  div_respuestas.appendChild(tmp)
+
+  div_consola.appendChild(div_respuestas);
+}
+
+function confirmado(respuesta,i,j,agenda,preguntas){
+  div_consola.innerHTML = "";
+  var objeto = agenda[i];
+  if (respuesta) {
+      //es el objeto!
+      eureka(objeto);
+    }else{
+      //no es el indicado, nos vamos pal siguiente
+      siguiente_objeto(i+1,agenda,preguntas)
+    }
+}
+
+function responder(respuesta,i,j,agenda,preguntas) {
+  div_consola.innerHTML = "";
+  var objeto = agenda[i];
+  var propiedades = objeto[1];
+  var propiedad = propiedades[j];
+  //se desenglosa la dupla
+  var caracter = propiedad[0];  //id de la caracteristica
+  var polaridad = propiedad[1]  //falso o verdadero
+  //luego de tener la respuesta
+  preguntas[caracter] = respuesta
+  //verifica, si no se cumple
+  //pasa al siguiente objeto
+  if (respuesta != polaridad) {
+    siguiente_objeto(i+1,agenda,preguntas)
+  }else{
+    //si se cumple, pasa a la siguiente propiedad
+    siguiente_pregunta(j+1,i,agenda,preguntas);
+  }
 }
 
 function siguiente_pregunta(j,i,agenda,preguntas) {
@@ -315,32 +403,17 @@ function siguiente_pregunta(j,i,agenda,preguntas) {
     if (preguntas.hasOwnProperty(caracter) ) {
       //como la pregunta ya existe
       var respuesta = preguntas[caracter];
+      responder(respuesta,i,j,agenda,preguntas);
     }else{
       //como no ha preguntado, ahora si pregunta
-      var respuesta = confirm(hacer_pregunta(caracter));
-      //y guarda la respuesta
-      preguntas[caracter] = respuesta
+      preguntar(hacer_pregunta(caracter),i,j,agenda,preguntas);
     }
-    //luego de tener la respuesta
-    //verifica, si no se cumple
-    //pasa al siguiente objeto
-    if (respuesta != polaridad) {
-      siguiente_objeto(i+1,agenda,preguntas)
-    }else{
-      //si se cumple, pasa a la siguiente propiedad
-      siguiente_pregunta(j+1,i,agenda,preguntas);
-    }
+    //aqui se espera por la respuesta
+    //va a otra funcion
   }else{
     //no hay mas propiedades
     //se valida si es el objeto indicado
-    encontrado = confirm("¿es " + objeto[0] + ' la respuesta?');
-    if (encontrado) {
-      //es el objeto!
-      eureka(objeto);
-    }else{
-      //no es el indicado, nos vamos pal siguiente
-      siguiente_objeto(i+1,agenda,preguntas)
-    }
+    confirmar(i,j,agenda,preguntas);
   }
 }
 
@@ -351,7 +424,32 @@ function siguiente_objeto(i,agenda,preguntas) {
     siguiente_pregunta(0,i,agenda,preguntas);
   }else{
     //no hay mas objetos
-    alert("No se encontraron coincidencias para las caracteristicas:\n"+decir_respuestas(preguntas));
+    div_consola.innerHTML = "";
+    var tmp = document.createElement('h4')
+    tmp.innerHTML = "Respuesta:";
+    div_consola.appendChild(tmp);
+
+    var tmp = document.createElement('p')
+    tmp.innerHTML = "Puedo saber muchas cosas pero, pero no conozco una fruta que:";
+    div_consola.appendChild(tmp);
+
+    var ul_propiedades = document.createElement('ul')
+
+    for (var indice in preguntas) {
+      //las duplas tienen:
+      //0. el id de la caracteristica
+      //1. la polaridad (true/false)
+      var caracter = caracteristicas[indice];
+      if (preguntas[indice]) {
+        var s = verbos[caracter[0]] + " " + caracter[1];
+      }else{
+        var s = "no " + verbos[caracter[0]] + " " + caracter[1];
+      }
+      var tmp = document.createElement('li')
+      tmp.innerHTML = s;
+      ul_propiedades.appendChild(tmp);
+    }
+    div_consola.appendChild(ul_propiedades);
   }
 }
 function descubrir_objeto() {
