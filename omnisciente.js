@@ -11,6 +11,14 @@ function eureka(objeto) {
   div_consola.appendChild(tmp);
 }
 
+function hacer_pregunta(indice) {
+  var s="";
+  var caracter = caracteristicas[indice];
+  s += "¿" + verbos[caracter[0]] + " " + caracter[1] + "?";
+  return s;
+}
+
+
 function preguntar(pregunta,i,j,agenda,preguntas) {
   div_consola.innerHTML = "";
   var objeto = agenda[i];
@@ -171,7 +179,7 @@ function contar_frutas() {
     div_consola.appendChild(tmp);
 
     var tmp = document.createElement('p')
-    tmp.innerHTML = "En toda mi experiencia como campesino he conocido <strong>"+ objetos.length + "</strong> frutas.";
+    tmp.innerHTML = "En toda mi experiencia como campesino he conocido <strong>"+ objetos.length + "</strong> clases diferentes de frutas.";
     div_consola.appendChild(tmp);
 }
 

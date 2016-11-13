@@ -15,11 +15,6 @@ var objetos = [
         //nombre y propiedades
         //las propiedades son un array de duplas
         //cada dupla tiene un id y una polaridad
-        ["naranja",[
-            [0,false],
-            [1,true],
-            [2,true],
-        ]],
         ["manzana",[
             [0,true],
             [1,true],

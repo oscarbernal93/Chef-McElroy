@@ -37,7 +37,7 @@ function crear_propiedad(contenedor,lista,nombre,propiedades){
 
   var input = document.createElement('input')
   var tmp = document.createElement('button')
-  tmp.innerHTML = "guardar";
+  tmp.innerHTML = "aceptar";
   tmp.addEventListener('click',function(){
     verbo_nuevo=parseInt(select.value);
     cualidad_nueva=input.value;
@@ -94,7 +94,7 @@ function seleccionar_propiedad(contenedor,lista,nombre,propiedades){
   select_respuesta.appendChild(tmp);
 
   var tmp = document.createElement('button')
-  tmp.innerHTML = "guardar";
+  tmp.innerHTML = "aceptar";
   tmp.addEventListener('click',function(){
     indice_seleccionado = parseInt(select.value);
     polaridad = parseBool(select_respuesta.value);
