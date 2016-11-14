@@ -14,14 +14,11 @@ include_once 'lenguaje_natural.php';
 $plegaria = htmlspecialchars($_GET["plegaria"]);
 $plegarias = explode(",", $plegaria);
 $momo = new Interprete();
-echo $plegaria."\n";
-foreach ($plegarias as $elemento) {
-	$resultado_lexico = $momo->lex($elemento);
-	foreach ($resultado_lexico as $palabra) {
-		if ('T_ESPACIO' != $palabra[1]) {
-			echo "'".$palabra[0]."'(".$palabra[1].") ";
-		}
-	}
+echo $plegaria."\n ";
+foreach ($plegarias as $plegaria) {
+	$resultado_lexico = $momo->lex($plegaria);
+	$resultado_sintactico = $momo->sintax($resultado_lexico);
+	echo $plegaria.":".$resultado_sintactico;
 	echo "\n";
 }
 ?>

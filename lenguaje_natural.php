@@ -2,6 +2,38 @@
 include_once 'db.php';
 
 /**
+* El Lector
+*/
+class Lector
+{
+    protected $frase;
+    protected $indice;
+    protected $tamano;
+    function __construct($elementos)
+    {
+        $this->frase = $elementos;
+        $this->indice = 0;
+        $this->tamano = count($elementos);
+    }
+
+    public function siguiente_palabra()
+    {
+        //verifica que existan palabras
+        if ($this->indice < $this->tamano) {
+            $palabra = $this->frase[$this->indice];
+            $this->indice++;
+            //verifica que la palabra no sea un espacio
+            if ('T_ESPACIO' == $palabra[1]) {
+               return $this->siguiente_palabra();
+            }else{
+                return $palabra;
+            }
+        }else{
+            return NULL;
+        }
+    }
+}
+/**
 * El interprete se encarga de entender lo que el usurio dice
 */
 class Interprete
@@ -23,6 +55,8 @@ class Interprete
         //otros elementos lexicos
         $elementos['\w+']= 'T_PALABRA_DESCONOCIDA';
         $elementos['\s+']= 'T_ESPACIO';
+        $elementos['y|e']= 'T_CONECTOR';
+
         $this->regex = '((' . implode(')|(', array_keys($elementos)) . '))A';
         $this->offsetToToken = array_values($elementos);
     }
@@ -57,8 +91,12 @@ class Interprete
 
     /**
     * ANALIZADOR SINTACTICO
-    * Este conjunto de funciones identifican las frases
+    * Esta funcion identifica las frases
     */
+    public function sintax($elementos)
+    {
+        $hannibal = new Lector($elementos);
+    }
 
 }
 
