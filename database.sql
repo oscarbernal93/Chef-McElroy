@@ -15,3 +15,10 @@ CREATE TABLE adverbio (
 	PRIMARY KEY (id)
 );
 INSERT INTO adverbio (cadena) VALUES ('muy'),('poco');
+
+CREATE TABLE sustantivo (
+	id INTEGER NOT NULL AUTO_INCREMENT,
+	cadena VARCHAR(255) NOT NULL,
+	PRIMARY KEY (id)
+);
+INSERT INTO sustantivo (cadena) VALUES ('dulce'),('amarillo');

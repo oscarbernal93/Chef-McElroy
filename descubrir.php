@@ -1,6 +1,5 @@
 <?php 
 include_once 'lenguaje_natural.php';
-include_once 'elementos_lexicos.php';
  ?>
 <!DOCTYPE html>
 <html>
@@ -14,12 +13,14 @@ include_once 'elementos_lexicos.php';
 <?php 
 $plegaria = htmlspecialchars($_GET["plegaria"]);
 $plegarias = explode(",", $plegaria);
-$momo = new Interprete($elementos);
+$momo = new Interprete();
 echo $plegaria."\n";
 foreach ($plegarias as $elemento) {
 	$resultado_lexico = $momo->lex($elemento);
 	foreach ($resultado_lexico as $palabra) {
-		echo $palabra[1]." ";
+		if ('T_ESPACIO' != $palabra[1]) {
+			echo "'".$palabra[0]."'(".$palabra[1].") ";
+		}
 	}
 	echo "\n";
 }

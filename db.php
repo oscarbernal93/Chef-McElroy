@@ -13,9 +13,10 @@ class Conocimiento
 		$filas = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 		$cadena = "";
 		foreach ($filas as $fila) {
-			$cadena .= "\s?".$fila["cadena"]."\s?|";
+			$cadena .= $fila["cadena"]."|";
 		}
-		return substr($cadena, 0,-1);
+		$cadena = substr($cadena, 0,-1);
+		return $cadena;
 	}
 }
 
