@@ -20,7 +20,7 @@
     </div>
     <div id="consola">
     <form method="get" action="descubrir.php">
-      <input type="text" name="plegaria">
+      <textarea type="text" name="plegaria" rows="7" cols="80"></textarea> 
       <button type="submit">Ir</button>
     </form>
     </div>
