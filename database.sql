@@ -39,7 +39,8 @@ INSERT INTO adverbio (cadena) VALUES
 ('ningunas'),
 ('ninguna'),
 ('ningun'),
-('demasiadas');
+('demasiadas'),
+('semi');
 
 CREATE TABLE adjetivo (
 	id INTEGER NOT NULL AUTO_INCREMENT,
@@ -68,6 +69,8 @@ INSERT INTO adjetivo (cadena) VALUES
 ('frio'),
 ('mediano'),
 ('mediana'),
+('crecido'),
+('dura'),
 ('lleno'),
 ('llena');
 
@@ -86,6 +89,7 @@ INSERT INTO sustantivo (cadena) VALUES
 ('zarcillos'),
 ('fruto'),
 ('racimos'),
+('racimo'),
 ('color'),
 ('enrredadera');
 
