@@ -18,7 +18,7 @@ echo $plegaria."\n ";
 foreach ($plegarias as $plegaria) {
 	$resultado_lexico = $momo->lex($plegaria);
 	$resultado_sintactico = $momo->sintax($resultado_lexico);
-	echo $plegaria.":".$resultado_sintactico;
+	echo $plegaria.": ".$resultado_sintactico;
 	echo "\n";
 }
 ?>

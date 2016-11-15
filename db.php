@@ -12,7 +12,10 @@ class Conocimiento
 		$sentencia = $this->pdo->query("SELECT cadena FROM ".$tabla);
 		$filas = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 		$cadena = "";
-		$cadena = implode("|", $filas);
+        foreach ($filas as $fila) {
+            $cadena .= $fila["cadena"]."|";
+        }
+        $cadena = substr($cadena, 0,-1);
 		return $cadena;
 	}
 }
