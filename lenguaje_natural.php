@@ -91,13 +91,13 @@ class Interprete
         $elementos[$adv]='T_ADVERBIO';
         $elementos[$adj]='T_ADJETIVO';
         $elementos[$art]='T_ARTICULO';
-        $elementos[$prep]='T_PREPOSICION';
         $elementos[$sust]='T_SUSTANTIVO';
+        $elementos[$prep]='T_PREPOSICION';
         $elementos[$verb]='T_VERBO';
         //otros elementos lexicos
-        $elementos['\w+']= 'T_PALABRA_DESCONOCIDA';
         $elementos['\s+|\r|\n']= 'T_ESPACIO';
-        $elementos['y|e|pero']= 'T_CONECTOR';
+        $elementos['y|e|pero|,']= 'T_CONECTOR';
+        $elementos['\w+']= 'T_PALABRA_DESCONOCIDA';
 
         $this->regex = '((' . implode(')|(', array_keys($elementos)) . '))A';
         $this->offsetToToken = array_values($elementos);
@@ -159,7 +159,7 @@ class Interprete
         $s = $lector->match('T_VERBO');
         $s &= $lector->match('T_ADJETIVO');
         $s &= $lector->match('T_PREPOSICION');
-        $s &= $lector->match('T_SUSTANTIVO');
+        $s &= $this->cosa($lector);
         $s &= $this->fin($lector);
         if($s){return true;}
         //se valida la siguiente regla
@@ -181,23 +181,15 @@ class Interprete
         //se valida la siguiente regla
         $lector->reset();
         $s = $lector->match('T_VERBO');
-        $s &= $lector->match('T_SUSTANTIVO');
-        $s &= $this->caracter($lector);
-        $s &= $this->fin($lector);
-        if($s){return true;}
-        //se valida la siguiente regla
-        $lector->reset();
-        $s = $lector->match('T_VERBO');
         $s &= $lector->match('T_ADVERBIO');
-        $s &= $lector->match('T_SUSTANTIVO');
+        $s &= $this->cosa($lector);
         $s &= $this->fin($lector);
         if($s){return true;}
         //se valida la siguiente regla
         $lector->reset();
         $s = $lector->match('T_VERBO');
         $s &= $lector->match('T_PREPOSICION');
-        $s &= $lector->match('T_ARTICULO');
-        $s &= $lector->match('T_SUSTANTIVO');
+        $s &= $this->cosa($lector);
         $s &= $this->caracter($lector);
         $s &= $this->fin($lector);
         if($s){return true;}
@@ -205,7 +197,7 @@ class Interprete
         $lector->reset();
         $s = $lector->match('T_VERBO');
         $s &= $lector->match('T_PREPOSICION');
-        $s &= $lector->match('T_SUSTANTIVO');
+        $s &= $this->cosa($lector);
         $s &= $this->caracter($lector);
         $s &= $this->fin($lector);
         if($s){return true;}
@@ -213,15 +205,14 @@ class Interprete
         $lector->reset();
         $s = $lector->match('T_VERBO');
         $s &= $lector->match('T_PREPOSICION');
-        $s &= $lector->match('T_SUSTANTIVO');
+        $s &= $this->cosa($lector);
         $s &= $this->caracter($lector);
         $s &= $this->fin($lector);
         if($s){return true;}
         //se valida la siguiente regla
         $lector->reset();
         $s = $lector->match('T_VERBO');
-        $s &= $lector->match('T_ARTICULO');
-        $s &= $lector->match('T_SUSTANTIVO');
+        $s &= $this->cosa($lector);
         $s &= $this->caracter($lector);
         $s &= $this->fin($lector);
         if($s){return true;}
@@ -234,8 +225,7 @@ class Interprete
         if($s){return true;}
         //se valida la siguiente regla
         $lector->reset();
-        $s = $lector->match('T_ARTICULO');
-        $s &= $lector->match('T_SUSTANTIVO');
+        $s = $this->cosa($lector);
         $s &= $lector->match('T_VERBO');
         $s &= $this->caracter($lector);
         $s &= $this->fin($lector);
@@ -244,8 +234,7 @@ class Interprete
         $lector->reset();
         $s = $lector->match('T_VERBO');
         $s &= $lector->match('T_PREPOSICION');
-        $s &= $lector->match('T_ARTICULO');
-        $s &= $lector->match('T_SUSTANTIVO');
+        $s &= $this->cosa($lector);
         $s &= $this->caracter($lector);
         $s &= $this->fin($lector);
         if($s){return true;}
@@ -257,6 +246,99 @@ class Interprete
         $s &= $this->caracter($lector);
         $s &= $this->fin($lector);
         if($s){return true;}
+        //se valida la siguiente regla
+        $lector->reset();
+        $s = $lector->match('T_VERBO');
+        $s &= $lector->match('T_PREPOSICION');
+        $s &= $this->cosa($lector);
+        $s &= $this->fin($lector);
+        if($s){return true;}
+        //se valida la siguiente regla
+        $lector->reset();
+        $s = $this->caracter($lector);
+        $s &= $lector->match('T_PREPOSICION');
+        $s &= $lector->match('T_ADVERBIO');
+        $s &= $this->fin($lector);
+        if($s){return true;}
+        //se valida la siguiente regla
+        $lector->reset();
+        $s = $lector->match('T_VERBO');
+        $s &= $lector->match('T_ADVERBIO');
+        $s &= $lector->match('T_ADVERBIO');
+        $s &= $this->cosa($lector);
+        $s &= $this->fin($lector);
+        if($s){return true;}
+        //se valida la siguiente regla
+        $lector->reset();
+        $s = $lector->match('T_ADVERBIO');
+        $s &= $lector->match('T_VERBO');
+        $s &= $this->cosa($lector);
+        $s &= $this->fin($lector);
+        if($s){return true;}
+        //se valida la siguiente regla
+        $lector->reset();
+        $s = $lector->match('T_PREPOSICION');
+        $s &= $this->cosa($lector);
+        $s &= $lector->match('T_ADJETIVO');
+        $s &= $this->fin($lector);
+        if($s){return true;}
+        //se valida la siguiente regla
+        $lector->reset();
+        $s = $lector->match('T_VERBO');
+        $s &= $this->cosa($lector);
+        $s &= $this->fin($lector);
+        if($s){return true;}
+        //se valida la siguiente regla
+        $lector->reset();
+        $s = $lector->match('T_VERBO');
+        $s &= $lector->match('T_ADJETIVO');
+        $s &= $lector->match('T_PREPOSICION');
+        $s &= $lector->match('T_ADVERBIO');
+        $s &= $this->fin($lector);
+        if($s){return true;}
+        //se valida la siguiente regla
+        $lector->reset();
+        $s = $lector->match('T_ADVERBIO');
+        $s &= $lector->match('T_ADJETIVO');
+        $s &= $lector->match('T_PREPOSICION');
+        $s &= $lector->match('T_ADVERBIO');
+        $s &= $this->fin($lector);
+        if($s){return true;}
+        //se valida la siguiente regla
+        $lector->reset();
+        $s = $lector->match('T_ADVERBIO');
+        $s &= $lector->match('T_ADJETIVO');
+        $s &= $this->fin($lector);
+        if($s){return true;}
+        //se valida la siguiente regla
+        $lector->reset();
+        $s = $lector->match('T_PREPOSICION');
+        $s &= $this->cosa($lector);
+        $s &= $lector->match('T_VERBO');
+        $s &= $lector->match('T_ADJETIVO');
+        $s &= $this->fin($lector);
+        if($s){return true;}
+        //se valida la siguiente regla
+        $lector->reset();
+        $s = $lector->match('T_ADVERBIO');
+        $s &= $lector->match('T_VERBO');
+        $s &= $lector->match('T_ADJETIVO');
+        $s &= $this->fin($lector);
+        if($s){return true;}
+        //se valida la siguiente regla
+        $lector->reset();
+        $s = $lector->match('T_ADVERBIO');
+        $s &= $lector->match('T_VERBO');
+        $s &= $lector->match('T_PREPOSICION');
+        $s &= $this->cosa($lector);
+        $s &= $this->fin($lector);
+        if($s){return true;}
+        //se valida la siguiente regla
+        $lector->reset();
+        $s = $this->caracter($lector);
+        $s &= $this->fin($lector);
+        if($s){return true;}
+
 
         //si ninguna regla se cumple
         return false;
@@ -270,7 +352,25 @@ class Interprete
         $lector->rewind();
         //siguiente regla
         $s = $lector->match('T_ADVERBIO');
+        $s &= $lector->match('T_ADVERBIO');
         $s &= $lector->match('T_ADJETIVO');
+        if($s){return true;}
+        $lector->rewind(3);
+        //siguiente regla
+        $s = $lector->match('T_ADVERBIO');
+        $s &= $lector->match('T_ADJETIVO');
+        if($s){return true;}
+        return false;
+    }
+    //funcion sintactica
+    public function cosa($lector)
+    {
+        $s = $lector->match('T_SUSTANTIVO');
+        if($s){return true;}
+        $lector->rewind();
+        //siguiente regla
+        $s = $lector->match('T_ARTICULO');
+        $s &= $lector->match('T_SUSTANTIVO');
         if($s){return true;}
         return false;
     }
@@ -289,7 +389,7 @@ class Interprete
         //crea un nuevo lector con el resto de la frase
         $frase = $lector->restos();
         $lector = new Lector($frase);
-        $s = sentencia($lector);
+        $s = $this->sentencia($lector);
         return $s;
     }
 

@@ -8,13 +8,13 @@ CREATE TABLE verbo (
 	PRIMARY KEY (id)
 );
 INSERT INTO verbo (cadena) VALUES 
+('esta'),
 ('es'),
 ('tiene'),
 ('ha'),
 ('sabe'),
 ('crece'),
-('son'),
-('esta');
+('son');
 
 CREATE TABLE adverbio (
 	id INTEGER NOT NULL AUTO_INCREMENT,
@@ -57,6 +57,7 @@ INSERT INTO adjetivo (cadena) VALUES
 ('naranja'),
 ('roja'),
 ('rojo'),
+('verdes'),
 ('verde'),
 ('cafe'),
 ('fibrosa'),
@@ -66,7 +67,9 @@ INSERT INTO adjetivo (cadena) VALUES
 ('acido'),
 ('frio'),
 ('mediano'),
-('mediana');
+('mediana'),
+('lleno'),
+('llena');
 
 CREATE TABLE sustantivo (
 	id INTEGER NOT NULL AUTO_INCREMENT,
@@ -106,4 +109,6 @@ CREATE TABLE preposicion (
 INSERT INTO preposicion (cadena) VALUES 
 ('de'),
 ('por'),
+('sus'),
+('su'),
 ('en');
