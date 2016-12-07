@@ -554,11 +554,14 @@ class Interprete
                     break;
             }
         } while (!is_null($palabra));
+        if ($lugar=="dentro") {
+            $propiedad.="_".$lugar;
+        }
         if (array_key_exists($propiedad, $this->propiedades)) {
-            $this->propiedades[$propiedad.'_'.$lugar] = min($this->propiedades[$propiedad.'_'.$lugar] , $valor);
+            $this->propiedades[$propiedad] = min($this->propiedades[$propiedad] , $valor);
         }else{
             //si no existe la propiedad la crea añadiendo el valor
-            $this->propiedades[$propiedad.'_'.$lugar] = $valor;
+            $this->propiedades[$propiedad] = $valor;
         }
     }
     public function tipo_d($frase)

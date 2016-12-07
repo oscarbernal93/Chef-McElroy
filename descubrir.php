@@ -42,6 +42,7 @@ $momo = new Interprete();
 		$llave = key($resultados);
 		$percent = (1 - $resultados[$llave])*100;
 		echo "parece ser: ".$llave.", estoy seguro un ".$percent."%";
+		var_dump($momo->propiedades());
 	}
 ?>
 </pre>
