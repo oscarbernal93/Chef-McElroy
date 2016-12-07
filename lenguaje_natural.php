@@ -463,11 +463,9 @@ class Interprete
     {
         //Propiedad de tipo B
         //Caracteristica de crecimiento
-        //crece en un arbol o es de cierto clima
-        //puede leer colores *ojo*
+        //crece en un arbol o es de cierto clima, o de cierto color
         $database = new Conocimiento;
         $hannibal = new Lector($frase);
-        echo "\ntipo_b:".$hannibal->frase();
         $propiedad = "";
         $sustantivo = "";
         $valor = 1;
@@ -486,20 +484,15 @@ class Interprete
                     $valor *= $multiplicador;
                     break;
             }
-        } while (!is_null($palabra));
-        //comparacion si contiene la palabra arbol,clima o color
-        //esto para evitar los plurales
-        if (!(stripos($sustantivo, 'arbol') === false)) {
-
         }
-        if (!(stripos($sustantivo, 'clima') === false)) {
-
-        }
+        //comparacion si contiene la palabra color
+        //unico caso especial de este tipo
+        //para los colores no se neceita guardar el sustantivo
         if (!(stripos($sustantivo, 'color') === false)) {
-
+            $this->propiedades[$propiedad] *= $valor;
+            return;
         }
-        echo "(p:$propiedad|s:$sustantivo|v:$valor)";
-
+        $this->propiedades[$propiedad.'_'.$sustantivo] *= $valor;
     }
     public function tipo_c($frase)
     {

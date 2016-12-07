@@ -24,6 +24,8 @@ $momo = new Interprete();
 		$resultado_lexico = $momo->lex($plegaria);
 		$resultado_sintactico = $momo->sintax($resultado_lexico);
 	endforeach;
+	echo "\n";
+	var_dump($momo->propiedades());
 ?>
 </pre>
 </p>
