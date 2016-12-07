@@ -11,7 +11,7 @@ INSERT INTO verbo (cadena) VALUES
 ('esta'),
 ('es'),
 ('tiene'),
-('ha'),
+('ha crecido'),
 ('sabe'),
 ('crece'),
 ('son');
@@ -70,7 +70,6 @@ INSERT INTO adjetivo (cadena) VALUES
 ('frio'),
 ('mediano'),
 ('mediana'),
-('crecido'),
 ('dura'),
 ('lleno'),
 ('llena');

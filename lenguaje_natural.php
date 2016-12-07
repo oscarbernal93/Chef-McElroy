@@ -457,13 +457,18 @@ class Interprete
                     break;
             }
         } while (!is_null($palabra));
-        $this->propiedades[$propiedad] *= $valor;
+        if (array_key_exists($propiedad, $this->propiedades)) {
+            $this->propiedades[$propiedad] *= $valor;
+        }else{
+            //si no existe la propiedad la crea añadiendo el valor
+            $this->propiedades[$propiedad] = $valor;
+        }       
     }
     public function tipo_b($frase)
     {
         //Propiedad de tipo B
         //Caracteristica de crecimiento
-        //crece en un arbol o es de cierto clima, o de cierto color
+        //crece en un arbol, es de cierto clima, es de cierto color
         $database = new Conocimiento;
         $hannibal = new Lector($frase);
         $propiedad = "";
@@ -489,19 +494,26 @@ class Interprete
         //unico caso especial de este tipo
         //para los colores no se neceita guardar el sustantivo
         if (!(stripos($sustantivo, 'color') === false)) {
-            $this->propiedades[$propiedad] *= $valor;
-            return;
+            $sustantivo=$propiedad;
+            $propiedad="";
         }
         //si la propiedad esta vacia no pone la union
         if($propiedad != ""){$propiedad .= "_";}
-        $this->propiedades[$propiedad.$sustantivo] *= $valor;
+        if (array_key_exists($propiedad, $this->propiedades)) {
+            $this->propiedades[$propiedad.$sustantivo] *= $valor;
+        }else{
+            //si no existe la propiedad la crea añadiendo el valor
+            $this->propiedades[$propiedad.$sustantivo] = $valor;
+        }
     }
     public function tipo_c($frase)
     {
+        //Propiedad de tipo C
+        //Caracteristica de Dentro/Fuera
         $database = new Conocimiento;
         $hannibal = new Lector($frase);
-        echo "\ntipo_c:".$hannibal->frase();
         $propiedad = "";
+        $lugar="";
         $valor = 1;
         //comienza con 1, osea que tiene la totalidad de la propiedad
         do {
@@ -514,11 +526,26 @@ class Interprete
                     $multiplicador = $database->obtener_valor($palabra[0]);
                     $valor *= $multiplicador;
                     break;
+                case 'T_PREPOSICION':
+                    //si hay una preposicion
+                    //la siguiente palabra es un adverbio
+                    //y este adverbio indica el lugar
+                    $palabra = $hannibal->siguiente_palabra();
+                    $lugar =  $palabra[0];
+                    break;
             }
         } while (!is_null($palabra));
+        if (array_key_exists($propiedad, $this->propiedades)) {
+            $this->propiedades[$propiedad.'_'.$lugar] *= $valor;
+        }else{
+            //si no existe la propiedad la crea añadiendo el valor
+            $this->propiedades[$propiedad.'_'.$lugar] = $valor;
+        }
     }
     public function tipo_d($frase)
     {
+        //Propiedad de tipo D
+        //Caracteristica de Tener/Ser algo
         $database = new Conocimiento;
         $hannibal = new Lector($frase);
         echo "\ntipo_d:".$hannibal->frase();
@@ -540,6 +567,8 @@ class Interprete
     }
     public function tipo_e($frase)
     {
+        //Propiedad de tipo E
+        //Caracteristica asociada a un sustantivo
         $database = new Conocimiento;
         $hannibal = new Lector($frase);
         echo "\ntipo_e:".$hannibal->frase();
@@ -561,6 +590,8 @@ class Interprete
     }
     public function tipo_f($frase)
     {
+        //Propiedad de tipo F
+        //Caracteristica de estar lleno de algo
         $database = new Conocimiento;
         $hannibal = new Lector($frase);
         echo "\ntipo_f:".$hannibal->frase();

@@ -21,8 +21,10 @@ $momo = new Interprete();
 	$propiedades = array();
 	foreach ($plegarias as $plegaria):
 		echo "\n*";
+		//echo "\n*$plegaria:";
 		$resultado_lexico = $momo->lex($plegaria);
 		$resultado_sintactico = $momo->sintax($resultado_lexico);
+		echo " $resultado_sintactico";
 	endforeach;
 	echo "\n";
 	var_dump($momo->propiedades());

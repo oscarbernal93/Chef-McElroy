@@ -57,3 +57,5 @@ tiene color rojo
 es de color rojo
 no es de color rojo
 no es roja
+ha crecido en arboles grandes
+tiene racimos grandes
