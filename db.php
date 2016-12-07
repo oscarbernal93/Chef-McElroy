@@ -36,6 +36,63 @@ class Conocimiento
 		$filas = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 		return $filas;
 	}
+	public function fruta($nombre)
+	{
+		$sql = "SELECT fruta.id ,fruta.nombre FROM fruta WHERE nombre LIKE '$nombre'";
+		$sentencia = $this->pdo->query($sql);
+		$filas = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+		$resu = $filas[0];
+		if (is_null($resu)) {
+			# como no existe la crea
+			$sql = "INSERT INTO fruta (nombre) VALUES ('$nombre')";
+			$sentencia = $this->pdo->prepare($sql);
+			$sentencia->execute();
+			$sql = "SELECT fruta.id ,fruta.nombre FROM fruta WHERE nombre LIKE '$nombre'";
+			$sentencia = $this->pdo->query($sql);
+			$filas = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+			$resu = $filas[0];
+		}
+		return $resu;
+	}
+	public function caracteristica($nombre)
+	{
+		$sql = "SELECT caracteristica.id ,caracteristica.nombre FROM caracteristica WHERE nombre LIKE '$nombre'";
+		$sentencia = $this->pdo->query($sql);
+		$filas = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+		$resu = $filas[0];
+		if (is_null($resu)) {
+			# como no existe la crea
+			$sql = "INSERT INTO caracteristica (nombre) VALUES ('$nombre')";
+			$sentencia = $this->pdo->prepare($sql);
+			$sentencia->execute();
+			$sql = "SELECT caracteristica.id ,caracteristica.nombre FROM caracteristica WHERE nombre LIKE '$nombre'";
+			$sentencia = $this->pdo->query($sql);
+			$filas = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+			$resu = $filas[0];
+		}
+		return $resu;
+
+	}
+	public function propiedad($fruta,$caracter)
+	{
+		$sql = "SELECT valor FROM fruta_caracteristica WHERE fruta_id = $fruta AND caracteristica_id = $caracter";
+		$sentencia = $this->pdo->query($sql);
+		$filas = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+		return $filas[0];
+
+	}
+	public function agregar_propiedad($id_f,$id_c,$valor)
+	{
+		$sql = "INSERT INTO fruta_caracteristica (fruta_id,caracteristica_id,valor) VALUES ('$id_f','$id_c','$valor')";
+		$sentencia = $this->pdo->prepare($sql);
+		$sentencia->execute();
+	}
+	public function editar_propiedad($id_f,$id_c,$valor)
+	{
+		$sql = "UPDATE fruta_caracteristica SET valor=$valor WHERE fruta_id = $id_f AND caracteristica_id = $id_c";
+		$sentencia = $this->pdo->prepare($sql);
+		$sentencia->execute();
+	}
 }
 
 ?>

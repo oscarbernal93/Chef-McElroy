@@ -136,7 +136,7 @@ CREATE TABLE caracteristica (
 INSERT INTO caracteristica (nombre) VALUES 
 ('roja'),
 ('dulce'),
-('arbol',)
+('arbol'),
 ('verde');
 
 CREATE TABLE fruta_caracteristica (

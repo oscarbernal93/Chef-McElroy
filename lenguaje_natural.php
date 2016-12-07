@@ -674,6 +674,34 @@ class Interprete
         asort($resultados);
         return($resultados);
     }
+    public function aprender($nombre,$propiedades)
+    {
+        $database = new Conocimiento;
+        //busca la fruta, si no existe la crea
+        $fruta = ($database->fruta($nombre));
+        $id_f = $fruta['id'];
+        $counter = 0;
+        $counter_new = 0;
+        foreach ($propiedades as $propiedad => $valor) {
+            //busca la caracteristica, si no existe la crea
+            $caracter = ($database->caracteristica($propiedad));
+            $id_c = $caracter['id'];
+            //ahora establece la relacion
+            $related_value = $database->propiedad($id_f,$id_c);
+            if (is_null($related_value)) {
+                # no existe la relacion
+                $database->agregar_propiedad($id_f,$id_c,$valor);
+                $counter_new++;
+            }else{
+                # existe la relacion
+                //calcula el nuevo valor y lo actualiza
+                $new_valor = ($related_value['valor']+$valor)/2;
+                $database->editar_propiedad($id_f,$id_c,$new_valor);
+            }
+            $counter++;
+        }
+        return array($counter,$counter_new);
+    }
 
 }
 

@@ -32,15 +32,30 @@ $momo = new Interprete();
 		$counter++;
 	endforeach;
 	$resultados = $momo->coincidencias();
-	reset($resultados);
-	$llave = key($resultados);
-	$percent = (1 - $resultados[$llave])*100;
 	echo "he leido $counter sentencias, ";
 	echo "$e_counter sentencias incorrectas.\n";
-	echo "parece ser: ".$llave.", estoy seguro un ".$percent."%";
+	
+	if (empty($resultados)) {
+		echo "y no tengo idea de que es :(";
+	}else{
+		reset($resultados);
+		$llave = key($resultados);
+		$percent = (1 - $resultados[$llave])*100;
+		echo "parece ser: ".$llave.", estoy seguro un ".$percent."%";
+	}
 ?>
 </pre>
-
+<button onclick="window.history.back();">Regresar!</button>
+<?php 
+$argos = json_encode($momo->propiedades());
+ ?>
+ <br>
+ <br>
+<form method="get" action="guardar.php">
+	  <input type="text" name="nombre" value="<?php echo "$llave"; ?>">
+	  <textarea style="display:none;" type="text" name="propiedades"><?php echo $argos; ?></textarea> 
+      <button type="submit">Adicionar fruta</button>
+    </form>
 </p>
 
 </body>
