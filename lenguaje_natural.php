@@ -111,8 +111,8 @@ class Interprete
         $elementos[$prep]='T_PREPOSICION';
         $elementos[$verb]='T_VERBO';
         //otros elementos lexicos
-        $elementos['\s+|-']= 'T_ESPACIO';
-        $elementos['y|e|pero|,|.']= 'T_CONECTOR';
+        $elementos['\r\n|\n|y|[.,]|e|pero']= 'T_CONECTOR';
+        $elementos['[ \t]+|[-]']= 'T_ESPACIO';
         $elementos['\w+']= 'T_PALABRA_DESCONOCIDA';
 
         $this->regex = '((' . implode(')|(', array_keys($elementos)) . '))A';
@@ -181,6 +181,17 @@ class Interprete
         //si lo que se lleva es verdadero
         if($s){$s &= $this->fin($lector);}
         if($s){$this->tipo_a($lector->leido()); return true;}
+        //se valida la siguiente regla
+        $lector->reset();
+        $s = $lector->match('T_VERBO');
+        $s &= $lector->match('T_ADJETIVO');
+        $s &= $lector->match('T_PREPOSICION');
+        $s &= $this->cosa($lector);
+        $s &= $this->caracter($lector);
+        //el fin solo se debe validar
+        //si lo que se lleva es verdadero
+        if($s){$s &= $this->fin($lector);}
+        if($s){$this->tipo_f($lector->leido());return true;}
         //se valida la siguiente regla
         $lector->reset();
         $s = $lector->match('T_VERBO');
@@ -380,10 +391,12 @@ class Interprete
         if($s){$s &= $this->fin($lector);}
         if($s){$this->tipo_a($lector->leido());return true;}
 
-
         //si ninguna regla se cumple
         return false;
-
+        //hasta aqui esta leyendo frases completas
+        //pero se muere al encontrar una invalida
+        //se resuelve dividiendo mucho cada frase
+        //pero eso se debe cambiar.
     }
     //funcion sintactica
     public function caracter($lector)
@@ -432,7 +445,11 @@ class Interprete
         $lector->rewind();
         $lector = new Lector($frase);
         $s = $this->sentencia($lector);
-        return $s;
+        //se retorna true y no el resultado de la sentencia
+        return true;
+        //esto ultimo para que independientemente que una parte
+        //este mala, si hay algo bueno, lo utiliza.
+        //para hacerlo estricto retornar $s
     }
     //funciones de interpretacion
     public function tipo_a($frase)
@@ -471,6 +488,7 @@ class Interprete
         //crece en un arbol, es de cierto clima, es de cierto color
         $database = new Conocimiento;
         $hannibal = new Lector($frase);
+        //echo "\ntipo_b:".$hannibal->frase();
         $propiedad = "";
         $sustantivo = "";
         $valor = 1;
@@ -512,6 +530,7 @@ class Interprete
         //Caracteristica de Dentro/Fuera
         $database = new Conocimiento;
         $hannibal = new Lector($frase);
+        //echo "\ntipo_c:".$hannibal->frase();
         $propiedad = "";
         $lugar="";
         $valor = 1;
@@ -546,10 +565,12 @@ class Interprete
     {
         //Propiedad de tipo D
         //Caracteristica de Tener/Ser algo
+        //puede tener color o sabor
         $database = new Conocimiento;
         $hannibal = new Lector($frase);
-        echo "\ntipo_d:".$hannibal->frase();
+        //echo "\ntipo_d:".$hannibal->frase();
         $propiedad = "";
+        $sustantivo = "";
         $valor = 1;
         //comienza con 1, osea que tiene la totalidad de la propiedad
         do {
@@ -558,35 +579,44 @@ class Interprete
                 case 'T_ADJETIVO':
                     $propiedad = $palabra[0];
                     break;
+                case 'T_SUSTANTIVO':
+                    $sustantivo = $palabra[0];
+                    break;
                 case 'T_ADVERBIO':
                     $multiplicador = $database->obtener_valor($palabra[0]);
                     $valor *= $multiplicador;
                     break;
             }
-        } while (!is_null($palabra));
+        }while (!is_null($palabra));
+        //comparacion si contiene la palabra color
+        //unico caso especial de este tipo
+        //para los colores no se neceita guardar el sustantivo
+        if (!(stripos($sustantivo, 'color') === false)) {
+            $sustantivo=$propiedad;
+            $propiedad="";
+        }
+        if (!(stripos($sustantivo, 'sabor') === false)) {
+            $sustantivo=$propiedad;
+            $propiedad="";
+        }
+        //si la propiedad esta vacia no pone la union
+        if($propiedad != ""){$propiedad .= "_";}
+        if (array_key_exists($propiedad, $this->propiedades)) {
+            $this->propiedades[$propiedad.$sustantivo] *= $valor;
+        }else{
+            //si no existe la propiedad la crea añadiendo el valor
+            $this->propiedades[$propiedad.$sustantivo] = $valor;
+        }
     }
     public function tipo_e($frase)
     {
         //Propiedad de tipo E
         //Caracteristica asociada a un sustantivo
-        $database = new Conocimiento;
-        $hannibal = new Lector($frase);
-        echo "\ntipo_e:".$hannibal->frase();
-        $propiedad = "";
-        $valor = 1;
-        //comienza con 1, osea que tiene la totalidad de la propiedad
-        do {
-            $palabra = $hannibal->siguiente_palabra();
-            switch ($palabra[1]) {
-                case 'T_ADJETIVO':
-                    $propiedad = $palabra[0];
-                    break;
-                case 'T_ADVERBIO':
-                    $multiplicador = $database->obtener_valor($palabra[0]);
-                    $valor *= $multiplicador;
-                    break;
-            }
-        } while (!is_null($palabra));
+        //puede tener color o sabor
+
+        //funciona igual que las tipo d
+        //aun asi eso se debe revisar a futuro
+        $this->tipo_d($frase);
     }
     public function tipo_f($frase)
     {
@@ -594,15 +624,24 @@ class Interprete
         //Caracteristica de estar lleno de algo
         $database = new Conocimiento;
         $hannibal = new Lector($frase);
-        echo "\ntipo_f:".$hannibal->frase();
+        //echo "\ntipo_f:".$hannibal->frase();
         $propiedad = "";
+        $sustantivo = "";
         $valor = 1;
         //comienza con 1, osea que tiene la totalidad de la propiedad
         do {
             $palabra = $hannibal->siguiente_palabra();
             switch ($palabra[1]) {
+                case 'T_VERBO':
+                    //cuando tiene un verbo, la siguiente palabra es
+                    //lleno, un adjetivo, por lo tanto se ignora
+                    $hannibal->siguiente_palabra();
+                    break;
                 case 'T_ADJETIVO':
                     $propiedad = $palabra[0];
+                    break;
+                case 'T_SUSTANTIVO':
+                    $sustantivo = $palabra[0];
                     break;
                 case 'T_ADVERBIO':
                     $multiplicador = $database->obtener_valor($palabra[0]);
@@ -610,6 +649,14 @@ class Interprete
                     break;
             }
         } while (!is_null($palabra));
+        //si la propiedad esta vacia no pone la union
+        if($propiedad != ""){$propiedad .= "_";}
+        if (array_key_exists($propiedad, $this->propiedades)) {
+            $this->propiedades[$propiedad.$sustantivo] *= $valor;
+        }else{
+            //si no existe la propiedad la crea añadiendo el valor
+            $this->propiedades[$propiedad.$sustantivo] = $valor;
+        }
     }
 
 }

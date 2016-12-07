@@ -13,20 +13,19 @@ include_once 'lenguaje_natural.php';
 
 <?php 
 $plegaria = htmlspecialchars($_GET["plegaria"]);
-$plegarias = explode("\r\n", $plegaria);
+//esto de dividir asi es un machetazo 
+//por que de lo contrario lee solo hasta una palabra invalida
+//y luego de eso se sale, hay que revisar eso en el futuro
+$plegarias = preg_split("/(\r\n|\n|[,.]| y )/", $plegaria);
 $momo = new Interprete();
 ?>
 <pre>
 <?php 
 	$propiedades = array();
 	foreach ($plegarias as $plegaria):
-		echo "\n*";
-		//echo "\n*$plegaria:";
 		$resultado_lexico = $momo->lex($plegaria);
 		$resultado_sintactico = $momo->sintax($resultado_lexico);
-		echo " $resultado_sintactico";
 	endforeach;
-	echo "\n";
 	var_dump($momo->propiedades());
 ?>
 </pre>

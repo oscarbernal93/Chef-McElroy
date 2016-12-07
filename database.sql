@@ -91,6 +91,7 @@ INSERT INTO sustantivo (cadena) VALUES
 ('racimos'),
 ('racimo'),
 ('color'),
+('agua'),
 ('enrredadera');
 
 CREATE TABLE articulo (
