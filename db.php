@@ -18,6 +18,12 @@ class Conocimiento
         $cadena = substr($cadena, 0,-1);
 		return $cadena;
 	}
+	public function obtener_valor($adverbio)
+	{
+		$sentencia = $this->pdo->query("SELECT valor FROM adverbio WHERE cadena LIKE '$adverbio'");
+		$filas = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+		return $filas[0]['valor'];
+	}
 }
 
 ?>

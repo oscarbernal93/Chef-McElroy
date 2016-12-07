@@ -19,28 +19,29 @@ INSERT INTO verbo (cadena) VALUES
 CREATE TABLE adverbio (
 	id INTEGER NOT NULL AUTO_INCREMENT,
 	cadena VARCHAR(255) NOT NULL,
+	valor FLOAT NOT NULL,
 	PRIMARY KEY (id)
 );
-INSERT INTO adverbio (cadena) VALUES 
-('muy'),
-('poco'),
-('a veces'),
-('mas o menos'),
-('como'),
-('algunas'),
-('alguna'),
-('alguno'),
-('algun'),
-('muchos'),
-('pocas'),
-('fuera'),
-('dentro'),
-('no'),
-('ningunas'),
-('ninguna'),
-('ningun'),
-('demasiadas'),
-('semi');
+INSERT INTO adverbio (cadena,valor) VALUES 
+('muy',0.9),
+('poco',0.2),
+('a veces',0.5),
+('mas o menos',0.5),
+('como',0.5),
+('algunas',0.3),
+('alguna',0.3),
+('alguno',0.3),
+('algun',0.3),
+('muchos',0.8),
+('pocas',0.2),
+('fuera',1),
+('dentro',1),
+('no',0),
+('ningunas',0.1),
+('ninguna',0.1),
+('ningun',0.1),
+('demasiadas',0.9),
+('semi',0.5);
 
 CREATE TABLE adjetivo (
 	id INTEGER NOT NULL AUTO_INCREMENT,

@@ -16,37 +16,16 @@ $plegaria = htmlspecialchars($_GET["plegaria"]);
 $plegarias = explode("\r\n", $plegaria);
 $momo = new Interprete();
 ?>
-<div>
+<pre>
 <?php 
-echo $plegaria;
-?>
-</div>
-<ul>
-	<?php 
+	$propiedades = array();
 	foreach ($plegarias as $plegaria):
+		echo "\n*";
 		$resultado_lexico = $momo->lex($plegaria);
-	var_dump();
 		$resultado_sintactico = $momo->sintax($resultado_lexico);
-	?>
-	<li class="<?php echo $resultado_sintactico; ?>">
-		<?php echo $plegaria ?>
-		<span class="lex">
-		<?php 
-		foreach ($resultado_lexico as $palabra) {
-			if ($palabra[1] == "T_ESPACIO") {
-				echo " ";
-			}else{
-				echo $palabra[1];//."(".$palabra[0].")";
-			}
-		}
-		?>
-		</span>
-	</li>
-
-	<?php 
 	endforeach;
-	?>
-</ul>
+?>
+</pre>
 </p>
 
 </body>

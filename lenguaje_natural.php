@@ -38,6 +38,20 @@ class Lector
     {
         return array_slice($this->frase, $this->indice);
     }
+    //esta funcion devuelve la frase de lo que se ha leido
+    public function leido()
+    {
+        return array_slice($this->frase,0,$this->indice);
+    }
+    //esta funcion devuelve como cadena la frase
+    public function frase()
+    {
+        $cadena = "";
+        foreach ($this->frase as $palabra) {
+            $cadena.=$palabra[0];
+        }
+        return $cadena;
+    }
     //compara la palabra con el token
     public function match($token)
     {
@@ -76,9 +90,11 @@ class Interprete
 {
     protected $regex;
     protected $offsetToToken;
+    protected $propiedades;
 
     public function __construct() {
         $database = new Conocimiento;
+        $this->propiedades = array();
         $adv = $database->obtener_propiedad("adverbio");
         $adj = $database->obtener_propiedad("adjetivo");
         $art = $database->obtener_propiedad("articulo");
@@ -96,7 +112,7 @@ class Interprete
         $elementos[$verb]='T_VERBO';
         //otros elementos lexicos
         $elementos['\s+|\r|\n|-']= 'T_ESPACIO';
-        $elementos['y|e|pero|,']= 'T_CONECTOR';
+        $elementos['y|e|pero|,|.']= 'T_CONECTOR';
         $elementos['\w+']= 'T_PALABRA_DESCONOCIDA';
 
         $this->regex = '((' . implode(')|(', array_keys($elementos)) . '))A';
@@ -134,6 +150,7 @@ class Interprete
     /**
     * ANALIZADOR SINTACTICO
     * Esta funcion identifica las frases
+    * y las almacena en propiedades (a travez de las funciones tipo)
     */
     public function sintax($elementos)
     {
@@ -153,7 +170,7 @@ class Interprete
         $s = $lector->match('T_VERBO');
         $s &= $this->caracter($lector);
         $s &= $this->fin($lector);
-        if($s){echo "#a1 "; return true;}
+        if($s){$this->tipo_a($lector->leido()); return true;}
         //se valida la siguiente regla
         $lector->reset();
         $s = $lector->match('T_VERBO');
@@ -161,7 +178,7 @@ class Interprete
         $s &= $lector->match('T_PREPOSICION');
         $s &= $this->cosa($lector);
         $s &= $this->fin($lector);
-        if($s){echo "#f1 ";return true;}
+        if($s){$this->tipo_f($lector->leido());return true;}
         //se valida la siguiente regla
         $lector->reset();
         $s = $lector->match('T_PREPOSICION');
@@ -169,7 +186,7 @@ class Interprete
         $s &= $lector->match('T_VERBO');
         $s &= $this->caracter($lector);
         $s &= $this->fin($lector);
-        if($s){echo "#c1 ";return true;}
+        if($s){$this->tipo_c($lector->leido());return true;}
         //se valida la siguiente regla
         $lector->reset();
         $s = $lector->match('T_VERBO');
@@ -177,14 +194,14 @@ class Interprete
         $s &= $lector->match('T_PREPOSICION');
         $s &= $lector->match('T_ADVERBIO');
         $s &= $this->fin($lector);
-        if($s){echo "#c2 ";return true;}
+        if($s){$this->tipo_c($lector->leido());return true;}
         //se valida la siguiente regla
         $lector->reset();
         $s = $lector->match('T_VERBO');
         $s &= $lector->match('T_ADVERBIO');
         $s &= $this->cosa($lector);
         $s &= $this->fin($lector);
-        if($s){echo "#d1 ";return true;}
+        if($s){$this->tipo_d($lector->leido());return true;}
         //se valida la siguiente regla
         $lector->reset();
         $s = $lector->match('T_VERBO');
@@ -192,21 +209,21 @@ class Interprete
         $s &= $this->cosa($lector);
         $s &= $this->caracter($lector);
         $s &= $this->fin($lector);
-        if($s){echo "#b1 ";return true;}
+        if($s){$this->tipo_b($lector->leido());return true;}
         //se valida la siguiente regla
         $lector->reset();
         $s = $lector->match('T_VERBO');
         $s &= $this->cosa($lector);
         $s &= $this->caracter($lector);
         $s &= $this->fin($lector);
-        if($s){echo "#e1 ";return true;}
+        if($s){$this->tipo_e($lector->leido());return true;}
         //se valida la siguiente regla
         $lector->reset();
         $s = $this->cosa($lector);
         $s &= $lector->match('T_VERBO');
         $s &= $this->caracter($lector);
         $s &= $this->fin($lector);
-        if($s){echo "#e2 ";return true;}
+        if($s){$this->tipo_e($lector->leido());return true;}
         //se valida la siguiente regla
         $lector->reset();
         $s = $lector->match('T_VERBO');
@@ -214,21 +231,21 @@ class Interprete
         $s &= $this->cosa($lector);
         $s &= $this->caracter($lector);
         $s &= $this->fin($lector);
-        if($s){echo "#b2 ";return true;}
+        if($s){$this->tipo_b($lector->leido());return true;}
         //se valida la siguiente regla
         $lector->reset();
         $s = $lector->match('T_VERBO');
         $s &= $lector->match('T_PREPOSICION');
         $s &= $this->cosa($lector);
         $s &= $this->fin($lector);
-        if($s){echo "#b3 ";return true;}
+        if($s){$this->tipo_b($lector->leido());return true;}
         //se valida la siguiente regla
         $lector->reset();
         $s = $this->caracter($lector);
         $s &= $lector->match('T_PREPOSICION');
         $s &= $lector->match('T_ADVERBIO');
         $s &= $this->fin($lector);
-        if($s){echo "#c3 ";return true;}
+        if($s){$this->tipo_c($lector->leido());return true;}
         //se valida la siguiente regla
         $lector->reset();
         $s = $lector->match('T_VERBO');
@@ -236,27 +253,27 @@ class Interprete
         $s &= $lector->match('T_ADVERBIO');
         $s &= $this->cosa($lector);
         $s &= $this->fin($lector);
-        if($s){echo "#e3 ";return true;}
+        if($s){$this->tipo_e($lector->leido());return true;}
         //se valida la siguiente regla
         $lector->reset();
         $s = $lector->match('T_ADVERBIO');
         $s &= $lector->match('T_VERBO');
         $s &= $this->cosa($lector);
         $s &= $this->fin($lector);
-        if($s){echo "#e4 ";return true;}
+        if($s){$this->tipo_e($lector->leido());return true;}
         //se valida la siguiente regla
         $lector->reset();
         $s = $lector->match('T_PREPOSICION');
         $s &= $this->cosa($lector);
         $s &= $lector->match('T_ADJETIVO');
         $s &= $this->fin($lector);
-        if($s){echo "#e5 ";return true;}
+        if($s){$this->tipo_e($lector->leido());return true;}
         //se valida la siguiente regla
         $lector->reset();
         $s = $lector->match('T_VERBO');
         $s &= $this->cosa($lector);
         $s &= $this->fin($lector);
-        if($s){echo "#d2 ";return true;}
+        if($s){$this->tipo_d($lector->leido());return true;}
         //se valida la siguiente regla
         $lector->reset();
         $s = $lector->match('T_VERBO');
@@ -264,7 +281,7 @@ class Interprete
         $s &= $lector->match('T_PREPOSICION');
         $s &= $lector->match('T_ADVERBIO');
         $s &= $this->fin($lector);
-        if($s){echo "#c4 ";return true;}
+        if($s){$this->tipo_c($lector->leido());return true;}
         //se valida la siguiente regla
         $lector->reset();
         $s = $lector->match('T_ADVERBIO');
@@ -272,7 +289,7 @@ class Interprete
         $s &= $lector->match('T_PREPOSICION');
         $s &= $lector->match('T_ADVERBIO');
         $s &= $this->fin($lector);
-        if($s){echo "#c5 ";return true;}
+        if($s){$this->tipo_c($lector->leido());return true;}
         //se valida la siguiente regla
         $lector->reset();
         $s = $lector->match('T_PREPOSICION');
@@ -280,7 +297,7 @@ class Interprete
         $s &= $lector->match('T_VERBO');
         $s &= $lector->match('T_ADJETIVO');
         $s &= $this->fin($lector);
-        if($s){echo "#e6 ";return true;}
+        if($s){$this->tipo_e($lector->leido());return true;}
         //se valida la siguiente regla
         $lector->reset();
         $s = $lector->match('T_ADVERBIO');
@@ -295,12 +312,12 @@ class Interprete
         $s &= $lector->match('T_PREPOSICION');
         $s &= $this->cosa($lector);
         $s &= $this->fin($lector);
-        if($s){echo "#a2 ";return true;}
+        if($s){$this->tipo_b($lector->leido());return true;}
         //se valida la siguiente regla
         $lector->reset();
         $s = $this->caracter($lector);
         $s &= $this->fin($lector);
-        if($s){echo "#a3 ";return true;}
+        if($s){$this->tipo_a($lector->leido());return true;}
 
 
         //si ninguna regla se cumple
@@ -351,10 +368,143 @@ class Interprete
         //y hay un conector valido
         //crea un nuevo lector con el resto de la frase
         $frase = $lector->restos();
+        $lector->rewind();
         $lector = new Lector($frase);
-        echo "~";
         $s = $this->sentencia($lector);
         return $s;
+    }
+    //funciones de interpretacion
+    public function tipo_a($frase)
+    {
+        $database = new Conocimiento;
+        $hannibal = new Lector($frase);
+        echo "\ntipo_a:".$hannibal->frase();
+        $propiedad = "";
+        $valor = 1;
+        //comienza con 1, osea que tiene la totalidad de la propiedad
+        do {
+            $palabra = $hannibal->siguiente_palabra();
+            switch ($palabra[1]) {
+                case 'T_ADJETIVO':
+                    $propiedad = $palabra[0];
+                    break;
+                case 'T_ADVERBIO':
+                    $multiplicador = $database->obtener_valor($palabra[0]);
+                    $valor *= $multiplicador;
+                    break;
+            }
+        } while (!is_null($palabra));
+        $this->propiedades[$propiedad] *= $valor;
+    }
+    public function tipo_b($frase)
+    {
+        $database = new Conocimiento;
+        $hannibal = new Lector($frase);
+        echo "\ntipo_b:".$hannibal->frase();
+        $propiedad = "";
+        $valor = 0.6;
+        //comienza con 1, osea que tiene la totalidad de la propiedad
+        do {
+            $palabra = $hannibal->siguiente_palabra();
+            switch ($palabra[1]) {
+                case 'T_ADJETIVO':
+                    $propiedad = $palabra[0];
+                    break;
+                case 'T_ADVERBIO':
+                    $multiplicador = $database->obtener_valor($palabra[0]);
+                    $valor += $multiplicador;
+                    $valor /= 2;
+                    break;
+            }
+        } while (!is_null($palabra));
+    }
+    public function tipo_c($frase)
+    {
+        $database = new Conocimiento;
+        $hannibal = new Lector($frase);
+        echo "\ntipo_c:".$hannibal->frase();
+        $propiedad = "";
+        $valor = 0.6;
+        //comienza con 1, osea que tiene la totalidad de la propiedad
+        do {
+            $palabra = $hannibal->siguiente_palabra();
+            switch ($palabra[1]) {
+                case 'T_ADJETIVO':
+                    $propiedad = $palabra[0];
+                    break;
+                case 'T_ADVERBIO':
+                    $multiplicador = $database->obtener_valor($palabra[0]);
+                    $valor += $multiplicador;
+                    $valor /= 2;
+                    break;
+            }
+        } while (!is_null($palabra));
+    }
+    public function tipo_d($frase)
+    {
+        $database = new Conocimiento;
+        $hannibal = new Lector($frase);
+        echo "\ntipo_d:".$hannibal->frase();
+        $propiedad = "";
+        $valor = 0.6;
+        //comienza con 1, osea que tiene la totalidad de la propiedad
+        do {
+            $palabra = $hannibal->siguiente_palabra();
+            switch ($palabra[1]) {
+                case 'T_ADJETIVO':
+                    $propiedad = $palabra[0];
+                    break;
+                case 'T_ADVERBIO':
+                    $multiplicador = $database->obtener_valor($palabra[0]);
+                    $valor += $multiplicador;
+                    $valor /= 2;
+                    break;
+            }
+        } while (!is_null($palabra));
+    }
+    public function tipo_e($frase)
+    {
+        $database = new Conocimiento;
+        $hannibal = new Lector($frase);
+        echo "\ntipo_e:".$hannibal->frase();
+        $propiedad = "";
+        $valor = 0.6;
+        //comienza con 1, osea que tiene la totalidad de la propiedad
+        do {
+            $palabra = $hannibal->siguiente_palabra();
+            switch ($palabra[1]) {
+                case 'T_ADJETIVO':
+                    $propiedad = $palabra[0];
+                    break;
+                case 'T_ADVERBIO':
+                    $multiplicador = $database->obtener_valor($palabra[0]);
+                    $valor += $multiplicador;
+                    $valor /= 2;
+                    break;
+            }
+        } while (!is_null($palabra));
+    }
+    public function tipo_f($frase)
+    {
+        $database = new Conocimiento;
+        $hannibal = new Lector($frase);
+        echo "\ntipo_f:".$hannibal->frase();
+        $propiedad = "";
+        $valor = 0.6;
+        //comienza con 1, osea que tiene la totalidad de la propiedad
+        do {
+            $palabra = $hannibal->siguiente_palabra();
+            switch ($palabra[1]) {
+                case 'T_ADJETIVO':
+                    $propiedad = $palabra[0];
+                    break;
+                case 'T_ADVERBIO':
+                    $multiplicador = $database->obtener_valor($palabra[0]);
+                    $valor += $multiplicador;
+                    $valor /= 2;
+                    break;
+            }
+        } while (!is_null($palabra));
     }
 
 }
