@@ -484,7 +484,7 @@ class Interprete
                     $valor *= $multiplicador;
                     break;
             }
-        }
+        }while (!is_null($palabra));
         //comparacion si contiene la palabra color
         //unico caso especial de este tipo
         //para los colores no se neceita guardar el sustantivo
@@ -492,7 +492,9 @@ class Interprete
             $this->propiedades[$propiedad] *= $valor;
             return;
         }
-        $this->propiedades[$propiedad.'_'.$sustantivo] *= $valor;
+        //si la propiedad esta vacia no pone la union
+        if($propiedad != ""){$propiedad .= "_";}
+        $this->propiedades[$propiedad.$sustantivo] *= $valor;
     }
     public function tipo_c($frase)
     {
