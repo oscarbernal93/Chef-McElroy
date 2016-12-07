@@ -29,7 +29,6 @@ es naranja
 es redonda
 crece en un arbol mediano
 tiene un sabor a veces dulce
-a veces es acido
 crece en clima frio
 las semillas son verdes
 las semillas son muy grandes
@@ -45,10 +44,16 @@ es muy dulce pero no es fibrosa
 no crece en un arbol
 es verde por fuera,es roja por dentro
 es muy dulce pero no es fibrosa y no crece en un arbol
+es muy dulce
+no es fibrosa
+no crece en un arbol
 es roja
 es una semilla
 es semilla
 ha crecido en racimos
 semi-redonda
 semi dura
-a veces es verde
+tiene color rojo
+es de color rojo
+no es de color rojo
+no es roja
