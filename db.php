@@ -24,6 +24,18 @@ class Conocimiento
 		$filas = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 		return $filas[0]['valor'];
 	}
+	public function obtener_frutas($propiedades)
+	{
+		$sql = "SELECT fruta.nombre AS nombre,caracteristica.nombre AS caracter,valor FROM fruta JOIN caracteristica,fruta_caracteristica WHERE fruta.id = fruta_id AND caracteristica.id = caracteristica_id AND (";
+		foreach ($propiedades as $propiedad => $valor) {
+			$sql .= "caracteristica.nombre LIKE '$propiedad'";
+            $sql .= " OR ";
+        }
+        $sql .= " FALSE )";
+		$sentencia = $this->pdo->query($sql);
+		$filas = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+		return $filas;
+	}
 }
 
 ?>

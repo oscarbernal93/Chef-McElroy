@@ -11,12 +11,7 @@
     <p>A el le gusta conocer la percepcion que tiene cada persona sobre las frutas, por eso esta encantado en que le cuentes todo lo que sabes sobre cualquier fruta.</p>
     </div>
     <div id="acciones">
-      <span>Operaciones disponibles:</span>
-      <button >Adicionar Fruta</button>
-      <button >Describir Fruta</button>
-      <button >Contar Frutas</button>
-      <button >Cargar BD</button>
-      <button >Descargar BD</button>
+      <span>Ingrese las caracteristicas de la fruta:</span>
     </div>
     <div id="consola">
     <form method="get" action="descubrir.php">

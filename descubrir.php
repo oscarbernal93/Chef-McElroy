@@ -21,14 +21,26 @@ $momo = new Interprete();
 ?>
 <pre>
 <?php 
-	$propiedades = array();
+	$counter = 0;
+	$e_counter = 0;
 	foreach ($plegarias as $plegaria):
 		$resultado_lexico = $momo->lex($plegaria);
 		$resultado_sintactico = $momo->sintax($resultado_lexico);
+		if($resultado_sintactico == "invalido"){
+			$e_counter++;
+		}
+		$counter++;
 	endforeach;
-	var_dump($momo->propiedades());
+	$resultados = $momo->coincidencias();
+	reset($resultados);
+	$llave = key($resultados);
+	$percent = (1 - $resultados[$llave])*100;
+	echo "he leido $counter sentencias, ";
+	echo "$e_counter sentencias incorrectas.\n";
+	echo "parece ser: ".$llave.", estoy seguro un ".$percent."%";
 ?>
 </pre>
+
 </p>
 
 </body>

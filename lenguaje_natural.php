@@ -470,12 +470,12 @@ class Interprete
                     break;
                 case 'T_ADVERBIO':
                     $multiplicador = $database->obtener_valor($palabra[0]);
-                    $valor *= $multiplicador;
+                    $valor = min($multiplicador,$valor);
                     break;
             }
         } while (!is_null($palabra));
         if (array_key_exists($propiedad, $this->propiedades)) {
-            $this->propiedades[$propiedad] *= $valor;
+            $this->propiedades[$propiedad] = min($this->propiedades[$propiedad] ,$valor);
         }else{
             //si no existe la propiedad la crea añadiendo el valor
             $this->propiedades[$propiedad] = $valor;
@@ -504,7 +504,7 @@ class Interprete
                     break;
                 case 'T_ADVERBIO':
                     $multiplicador = $database->obtener_valor($palabra[0]);
-                    $valor *= $multiplicador;
+                    $valor = min($valor , $multiplicador);
                     break;
             }
         }while (!is_null($palabra));
@@ -518,7 +518,7 @@ class Interprete
         //si la propiedad esta vacia no pone la union
         if($propiedad != ""){$propiedad .= "_";}
         if (array_key_exists($propiedad, $this->propiedades)) {
-            $this->propiedades[$propiedad.$sustantivo] *= $valor;
+            $this->propiedades[$propiedad.$sustantivo] = min($this->propiedades[$propiedad.$sustantivo] , $valor);
         }else{
             //si no existe la propiedad la crea añadiendo el valor
             $this->propiedades[$propiedad.$sustantivo] = $valor;
@@ -543,7 +543,7 @@ class Interprete
                     break;
                 case 'T_ADVERBIO':
                     $multiplicador = $database->obtener_valor($palabra[0]);
-                    $valor *= $multiplicador;
+                    $valor = min($valor , $multiplicador);
                     break;
                 case 'T_PREPOSICION':
                     //si hay una preposicion
@@ -555,7 +555,7 @@ class Interprete
             }
         } while (!is_null($palabra));
         if (array_key_exists($propiedad, $this->propiedades)) {
-            $this->propiedades[$propiedad.'_'.$lugar] *= $valor;
+            $this->propiedades[$propiedad.'_'.$lugar] = min($this->propiedades[$propiedad.'_'.$lugar] , $valor);
         }else{
             //si no existe la propiedad la crea añadiendo el valor
             $this->propiedades[$propiedad.'_'.$lugar] = $valor;
@@ -584,7 +584,7 @@ class Interprete
                     break;
                 case 'T_ADVERBIO':
                     $multiplicador = $database->obtener_valor($palabra[0]);
-                    $valor *= $multiplicador;
+                    $valor = min($valor , $multiplicador);
                     break;
             }
         }while (!is_null($palabra));
@@ -602,7 +602,7 @@ class Interprete
         //si la propiedad esta vacia no pone la union
         if($propiedad != ""){$propiedad .= "_";}
         if (array_key_exists($propiedad, $this->propiedades)) {
-            $this->propiedades[$propiedad.$sustantivo] *= $valor;
+            $this->propiedades[$propiedad.$sustantivo] = min($this->propiedades[$propiedad.$sustantivo] , $valor);
         }else{
             //si no existe la propiedad la crea añadiendo el valor
             $this->propiedades[$propiedad.$sustantivo] = $valor;
@@ -645,18 +645,34 @@ class Interprete
                     break;
                 case 'T_ADVERBIO':
                     $multiplicador = $database->obtener_valor($palabra[0]);
-                    $valor *= $multiplicador;
+                    $valor = min($valor , $multiplicador);
                     break;
             }
         } while (!is_null($palabra));
         //si la propiedad esta vacia no pone la union
         if($propiedad != ""){$propiedad .= "_";}
         if (array_key_exists($propiedad, $this->propiedades)) {
-            $this->propiedades[$propiedad.$sustantivo] *= $valor;
+            $this->propiedades[$propiedad.$sustantivo] = min($this->propiedades[$propiedad.$sustantivo] , $valor);
         }else{
             //si no existe la propiedad la crea añadiendo el valor
             $this->propiedades[$propiedad.$sustantivo] = $valor;
         }
+    }
+    // EVALUACION DE RESULTADOS
+    public function coincidencias()
+    {
+        $database = new Conocimiento;
+        $frutas = $database->obtener_frutas($this->propiedades);
+        $resultados = array();
+        $count=0;
+        foreach ($frutas as $key => $fruta) {
+            $v1=$this->propiedades[$fruta['caracter']];
+            $v2=$fruta['valor'];
+            $resultados[$fruta['nombre']] += abs($v1-$v2);
+            $count++;
+        }
+        asort($resultados);
+        return($resultados);
     }
 
 }
