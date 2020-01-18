@@ -460,7 +460,7 @@ class Interprete
         $hannibal = new Lector($frase);
         //echo "\ntipo_a:".$hannibal->frase();
         $propiedad = "";
-        $valor = 1;
+        $valor = 0.75;
         //comienza con 1, osea que tiene la totalidad de la propiedad
         do {
             $palabra = $hannibal->siguiente_palabra();
@@ -491,7 +491,7 @@ class Interprete
         //echo "\ntipo_b:".$hannibal->frase();
         $propiedad = "";
         $sustantivo = "";
-        $valor = 1;
+        $valor = 0.75;
         //comienza con 1, osea que tiene la totalidad de la propiedad
         do {
             $palabra = $hannibal->siguiente_palabra();
@@ -533,7 +533,7 @@ class Interprete
         //echo "\ntipo_c:".$hannibal->frase();
         $propiedad = "";
         $lugar="";
-        $valor = 1;
+        $valor = 0.75;
         //comienza con 1, osea que tiene la totalidad de la propiedad
         do {
             $palabra = $hannibal->siguiente_palabra();
@@ -574,7 +574,7 @@ class Interprete
         //echo "\ntipo_d:".$hannibal->frase();
         $propiedad = "";
         $sustantivo = "";
-        $valor = 1;
+        $valor = 0.75;
         //comienza con 1, osea que tiene la totalidad de la propiedad
         do {
             $palabra = $hannibal->siguiente_palabra();
@@ -630,7 +630,7 @@ class Interprete
         //echo "\ntipo_f:".$hannibal->frase();
         $propiedad = "";
         $sustantivo = "";
-        $valor = 1;
+        $valor = 0.75;
         //comienza con 1, osea que tiene la totalidad de la propiedad
         do {
             $palabra = $hannibal->siguiente_palabra();

@@ -23,11 +23,13 @@ $momo = new Interprete();
 <?php 
 	$counter = 0;
 	$e_counter = 0;
+	$invalidas = array();
 	foreach ($plegarias as $plegaria):
 		$resultado_lexico = $momo->lex($plegaria);
 		$resultado_sintactico = $momo->sintax($resultado_lexico);
 		if($resultado_sintactico == "invalido"){
 			$e_counter++;
+			$invalidas[]=array_slice($resultado_lexico,0);
 		}
 		$counter++;
 	endforeach;
@@ -40,9 +42,15 @@ $momo = new Interprete();
 	}else{
 		reset($resultados);
 		$llave = key($resultados);
+		$primero = $llave;
 		$percent = (1 - $resultados[$llave])*100;
 		echo "parece ser: ".$llave.", estoy seguro un ".$percent."%";
-		var_dump($momo->propiedades());
+		next($resultados);
+		$llave = key($resultados);
+		$percent = (1 - $resultados[$llave])*100;
+		if ($percent > 50 and $llave) {
+			echo "\ntalvez podria ser: ".$llave.", pero solo estoy seguro un ".$percent."%";
+		}
 	}
 ?>
 </pre>
@@ -53,11 +61,19 @@ $argos = json_encode($momo->propiedades());
  <br>
  <br>
 <form method="get" action="guardar.php">
-	  <input type="text" name="nombre" value="<?php echo "$llave"; ?>">
+	  <input type="text" name="nombre" value="<?php echo "$primero"; ?>">
 	  <textarea style="display:none;" type="text" name="propiedades"><?php echo $argos; ?></textarea> 
       <button type="submit">Adicionar fruta</button>
     </form>
 </p>
+<?php $argos = json_encode($invalidas); ?>
+<?php if ($e_counter>0):?>
+<form method="get" action="aprender.php">
+	  <textarea style="display:none;" type="text" name="palabras"><?php echo $argos; ?></textarea> 
+      <button type="submit">Aprender Palabras Nuevas</button>
+    </form>
+</p>
+<?php endif; ?>
 
 </body>
 </html>

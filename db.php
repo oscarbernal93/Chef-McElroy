@@ -93,6 +93,19 @@ class Conocimiento
 		$sentencia = $this->pdo->prepare($sql);
 		$sentencia->execute();
 	}
+	public function palabrear($palabra,$token,$valor=NULL)
+	{
+		if ($token == 'T_ADVERBIO' and !is_null($valor)) {
+			# caso especial
+			$tabla = 'adverbio';
+			$sql = "INSERT INTO $tabla (cadena,valor) VALUES ('$palabra','$valor')";
+		}else{
+			$tabla = strtolower(explode('_', $token)[1]);
+			$sql = "INSERT INTO $tabla (cadena) VALUES ('$palabra')";
+		}
+		$sentencia = $this->pdo->prepare($sql);
+		$sentencia->execute();
+	}
 }
 
 ?>
